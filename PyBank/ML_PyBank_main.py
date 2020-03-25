@@ -8,29 +8,34 @@ import csv
 PyBank_csv_path = os.path.join('Resources','budget_data.csv')
 
 
-
-
-# Define the function and have it accept the 'PyBankInfo' as its sole parameter
-def budget():
-    PyBank_csv_path = os.path.join('Resources','budget_data.csv')
+#PyBank_csv_path = os.path.join('Resources','budget_data.csv')
 
 #set variables
-    month = str(budget_data[0])   #problems with parameter here -needs definition!
-    Profit_Losses = int(budget_data[1])
+    #month = str(PyBank_csv_path[0])   #problems with parameter here -needs definition!
+    #Profit_Losses = float(PyBank_csv_path[1])
+Sum_of_all = 0
+
+with open(PyBank_csv_path,'r') as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=',')
+
+
 
 # Read the header row first (should this be here?)
     csv_header = next(csvfile)
-    print(f"CSV Header: {csv_header}")
+    #print(f"CSV Header: {csv_header}")
 
 #count months
     Total_month = len(list(csvreader))
     print(f"Total Months: {str(Total_month)}")
+
 #Net total of profit/losses over entire period
-    Sum_of_all = 0
+#profit_loss = int(row[1])
+#net_total = net_total + profit_loss
 
     for row in csvreader:
-       total += float(row[2])
-    print(f"Total: {str(Sum_of_all)}")
+        #Sum_of_all = Sum_of_all + row[1]
+        Sum_of_all += row[1]
+    print("Total:  " + str(Sum_of_all))
 
 
 #average of the changes in profit/losses over entire period
@@ -38,14 +43,20 @@ def budget():
 
 
 #greatest increase in profits (date & amount) over entire period
-    maxNumber = max(Profit_Losses), 2
-    
+    maxNumber = (max(PyBank_csv_path), [1])
+    #print(f"Greatest Increase in Profits: "+ maxNumber)
 
+    #maxNumber = str(max(csvreader, 1))
+    #print("Greatest Increase in Profits:  + maxNumber[Profit_Losses[1]]+ maxNumber[Profit_Losses[2]]")
+    #print(f"Greatest Increase in Profits: + maxNumber")
+    print(maxNumber)
 
 #greatest decrease in profits (date & amount) over entire period
-    minNumber = min(Profit_Losses), 2
+    minNumber = (min(PyBank_csv_path), 1)
 
-
+    #minNumber = min(csvreader, int(Profit_Losses[2])
+    #print(f"Greatest Decrease in Profits:  {str(min(csvreader[1]))}")
+    print(minNumber)
 
 
 
@@ -58,7 +69,7 @@ with open(PyBank_csv_path,'r') as csvfile:
 #print out analysis
 print ("Financial Analysis")
 print ("_____________________")
-budget()
+
 
 
 
