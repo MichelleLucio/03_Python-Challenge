@@ -7,9 +7,6 @@ import csv
 
 PyBank_csv_path = os.path.join('Resources','budget_data.csv')
 
-#with open(PyBank_csv_path,'r') as csvfile:
-    #csvreader = csv.reader(csvfile, delimiter=',')
-
 
 #set variables
 monthcounter = 0
@@ -17,7 +14,11 @@ netamount = 0
 monthlydiff = 0
 monthlydifftotal = 0
 previousmonthamt = 0
-monthlydiffdict = {}
+monthlydiffave = 0
+monthlydifflist = []
+max_monthnum = 0
+min_monthnum = 0
+csvDataFile = str
 
 
 #def loop for counting number of months
@@ -25,17 +26,9 @@ def month_number():
     PyBank_csv_path = os.path.join('Resources','budget_data.csv')
     with open(PyBank_csv_path,'r') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
-    #monthcounter = 0
         csv_header = next(csvfile)
         monthcounter = len(list(csvreader))
-    #for row in csvreader:
-        #if row [0] == "Date":
-            #pass
-        #else:
-            #counter = counter + 1
-            #print (row)
-            #if counter >= n:
-                #break
+
     return monthcounter          
 
 
@@ -56,74 +49,75 @@ def net_total():
 
 
 #def for creating a dictionary for values of changes in profit/losses
-def pl_change():
-    PyBank_csv_path = os.path.join('Resources','budget_data.csv')
-    with open(PyBank_csv_path,'r') as csvfile:
-        csvreader = csv.reader(csvfile, delimiter=',')
-        monthlydiff = 0
-        monthlydifftotal = 0
-        previousmonthamt = 0
-        monthlydiffdict = {}
-        for row in csvreader:
-            if row[0] == 'Date':
-                pass
-            else:  #calc for month diff, adding total of diff, add to dictionary, storing previous month info   
+#def pl_change():
+PyBank_csv_path = os.path.join('Resources','budget_data.csv')
+with open(PyBank_csv_path,'r') as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=',')
+    monthlydiff = 0
+    previousmonthamt = 0
+    monthlydifflist = []
+    monthlydiffave = 0
+    for row in csvreader:
+        if row[0] == 'Date':
+            pass
+        else:  
+                
+                #calc for month diff, adding total of diff, add to dictionary, storing previous month info   
+            monthlydiff = (int(row[1]) - previousmonthamt)
 
-                monthlydiff = (int(row[1]) - previousmonthamt)
-                monthlydifftotal = monthlydifftotal + monthlydiff
-                monthlydiffdict.update({str(row[0]) : int(monthlydiff)})
-                previousmonthamt = int(row[1])
+            monthlydifflist.append(int(row[1]) - previousmonthamt)
+            previousmonthamt = int(row[1])
 
-    return monthlydiff, monthlydifftotal, monthlydiffdict
-    #return monthlydifftotal
+  
 
-
-#dict.update({'key3':'geeks'})
-
-
-#def for finding average of changes in profit/losses
-#def monthlyave():
-    #PyBank_csv_path = os.path.join('Resources','budget_data.csv')
-    #with open(PyBank_csv_path,'r') as csvfile:
-        #csvreader = csv.reader(csvfile, delimiter=',')
-
-        #monthlydifftotal = 0
-        #previousmonthamt = 0
-
-        #for row in csvreader:
-            #if row[0] == 'Date':
-                #pass
-            #else:  #adding total of diff, storing previous month info   
-
-                #monthlydifftotal = monthlydifftotal + (int(row[1]) - previousmonthamt)
-
-                #previousmonthamt = int(row[1])
-
-    #return monthlydifftotal
-    #monthlydifftotal / (monthcounter - 1)
-
-
-
-#test if working
+#run above functions
 monthcounter = month_number()
 netamount = net_total()
-monthlydifftotal = pl_change()
-monthlydiff = pl_change()
-
-monthlydiffdict = pl_change()
-
-print(monthcounter)
-print(netamount)
-print(monthlydiff)
-print(monthlydifftotal)
-#print(monthlydiffdict)
 
 
+#for finding average of changes in profit/losses
+for x in monthlydifflist[1:]:
+    monthlydifftotal = ((monthlydifftotal) + x)
+    monthlydiffave = ((monthlydifftotal) / (monthcounter - 1))
+
+
+with open(PyBank_csv_path,'r') as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=',')
+
+#for printing max & min month
+    for index, row in enumerate(csvreader):
+        if index == (monthlydifflist.index(max(monthlydifflist)) +1):
+            max_month = (row[0])
+            #print (max_month)
+        else:
+            if index == (monthlydifflist.index(min(monthlydifflist)) +1):
+                min_month = (row[0])
+                #print(min_month)
 
 
 
+print('Financial Analysis')
+print('\n', '----------------------')
+print('Total Months: ', monthcounter)
+print('Net Total of Profit/Losses: $', netamount)
+print('Average Change: $', round(monthlydiffave, 2))
+print('Greatest Increase in Profits: $', max(monthlydifflist), max_month)
+print('Greatest Decrease in Profits: $', min(monthlydifflist), min_month)
 
 
 
+#def to print to text file
+def printtofile():
+    output_path = os.path.join('FinancialAnalysis.txt')
+    with open(output_path, 'w', newline='') as f:
+        f.write('Financial Analysis')
+        f.write('\n' + '------------------------')
+        f.write('\n' + 'Total Months: '+ str(monthcounter))
+        f.write('\n' + '------------------------')
+        f.write('\n' + 'Average Change: $'+ str(round(monthlydiffave, 2)))
+        f.write('\n' + 'Greatest Increase in Profits: $' + str(max(monthlydifflist)) + ' ' + str(max_month))
+        f.write('\n' + 'Greatest Decrease in Profits: $' + str(min(monthlydifflist)) + ' ' + str(min_month))
 
+#run print functions
+printtofile()
 
